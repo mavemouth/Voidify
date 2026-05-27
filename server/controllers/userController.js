@@ -1,3 +1,5 @@
+import userModel from "../models/userModel.js";
+
 const clerkWebhooks = async (req, res) => {
   console.log("Webhook hit");
 
@@ -52,7 +54,7 @@ const clerkWebhooks = async (req, res) => {
     }
   } catch (error) {
     console.log("FULL ERROR");
-    console.log(error);
+    console.error(error);
 
     console.log("ERROR MESSAGE");
     console.log(error.message);
