@@ -2,10 +2,15 @@ const clerkWebhooks = async (req, res) => {
   console.log("Webhook hit");
 
   try {
-    console.log("Headers:", req.headers);
-    console.log("Body:", req.body);
+    console.log("HEADERS");
+    console.log(req.headers);
+
+    console.log("BODY");
+    console.log(req.body);
 
     const whook = new Webhook(process.env.CLERK_WEBHOOK_SECRET);
+
+    console.log("Before verify");
 
     await whook.verify(JSON.stringify(req.body), {
       "svix-id": req.headers["svix-id"],
@@ -17,9 +22,11 @@ const clerkWebhooks = async (req, res) => {
 
     const { data, type } = req.body;
 
+    console.log("TYPE:", type);
+
     switch (type) {
       case "user.created": {
-        console.log("Creating user");
+        console.log("Inside user.created");
 
         const userData = {
           clerkId: data.id,
@@ -28,6 +35,8 @@ const clerkWebhooks = async (req, res) => {
           lastName: data.last_name,
           photo: data.image_url,
         };
+
+        console.log("USER DATA:", userData);
 
         const newUser = await userModel.create(userData);
 
@@ -38,10 +47,15 @@ const clerkWebhooks = async (req, res) => {
       }
 
       default:
+        console.log("Unhandled event");
         res.json({});
     }
   } catch (error) {
-    console.log("Webhook Error:", error);
+    console.log("FULL ERROR");
+    console.log(error);
+
+    console.log("ERROR MESSAGE");
+    console.log(error.message);
 
     res.status(500).json({
       success: false,
