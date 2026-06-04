@@ -2,11 +2,20 @@ import React, { useState } from "react";
 import { assets } from "../assets/assets";
 import { Link } from "react-router-dom";
 import { SignIn, UserButton, useUser } from "@clerk/react";
+import { useEffect } from "react";
 
 const Navbar = () => {
   const [showSignIn, setShowSignIn] = useState(false);
-  const { isSignedIn, user } = useUser();
+  const { isLoaded, isSignedIn, user } = useUser();
 
+  if (!isLoaded) {
+    return null;
+  }
+  useEffect(() => {
+    if (isSignedIn) {
+      setShowSignIn(false);
+    }
+  }, [isSignedIn]);
   return (
     <>
       <div className="flex items-center justify-between mx-4 py-3 lg:mx-44 ">
@@ -14,7 +23,7 @@ const Navbar = () => {
           <img className="w-32 sm:w-44" src={assets.logo} alt="" />
         </Link>
         {isSignedIn ? (
-          <UserButton 
+          <UserButton
             appearance={{
               elements: {
                 userButtonBox: "flex items-center justify-center",

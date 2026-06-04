@@ -6,6 +6,8 @@ const clerkWebhooks = async (req, res) => {
 
   try {
     console.log("SECRET EXISTS:", !!process.env.CLERK_WEBHOOK_SECRET);
+    console.log("HEADERS:", req.headers);
+    console.log("BODY:", req.body);
 
     const whook = new Webhook(process.env.CLERK_WEBHOOK_SECRET);
 
