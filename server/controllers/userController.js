@@ -5,7 +5,7 @@ const clerkWebhooks = async (req, res) => {
   console.log("WEBHOOK HIT");
 
   try {
-    console.log("SECRET:", !!process.env.CLERK_WEBHOOK_SECRET);
+    console.log("SECRET EXISTS:", !!process.env.CLERK_WEBHOOK_SECRET);
 
     const whook = new Webhook(process.env.CLERK_WEBHOOK_SECRET);
 
@@ -23,40 +23,27 @@ const clerkWebhooks = async (req, res) => {
 
     console.log("TYPE:", type);
 
-    switch (type) {
-      case "user.created": {
-        console.log("Inside user.created");
+    if (type === "user.created") {
+      const userData = {
+        clerkId: data.id,
+        email: data.email_addresses[0].email_address,
+        firstName: data.first_name,
+        lastName: data.last_name,
+        photo: data.image_url,
+      };
 
-        const userData = {
-          clerkId: data.id,
-          email: data.email_addresses[0].email_address,
-          firstName: data.first_name,
-          lastName: data.last_name,
-          photo: data.image_url,
-        };
+      console.log("SAVING USER");
 
-        console.log("USER DATA:", userData);
+      const newUser = await userModel.create(userData);
 
-        const newUser = await userModel.create(userData);
-
-        console.log("Saved User:", newUser);
-
-        res.json({});
-        break;
-      }
-
-      default:
-        console.log("Unhandled event");
-        res.json({});
+      console.log("USER SAVED:", newUser);
     }
+
+    return res.status(200).json({});
   } catch (error) {
-    console.log("FULL ERROR");
-    console.error(error);
+    console.error("WEBHOOK ERROR:", error);
 
-    console.log("ERROR MESSAGE");
-    console.log(error.message);
-
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       message: error.message,
     });
