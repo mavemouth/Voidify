@@ -8,14 +8,15 @@ const Navbar = () => {
   const [showSignIn, setShowSignIn] = useState(false);
   const { isLoaded, isSignedIn, user } = useUser();
 
-  if (!isLoaded) {
-    return null;
-  }
   useEffect(() => {
     if (isSignedIn) {
       setShowSignIn(false);
     }
   }, [isSignedIn]);
+
+  if (!isLoaded) {
+    return null;
+  }
   return (
     <>
       <div className="flex items-center justify-between mx-4 py-3 lg:mx-44 ">
