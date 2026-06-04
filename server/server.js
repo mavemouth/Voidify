@@ -22,7 +22,14 @@ app.get("/", (req, res) => {
   res.send("API Working");
 });
 app.use("/api/user", userRouter);
+app.post("/test", (req, res) => {
+  console.log("TEST POST HIT");
+  console.log(req.body);
 
+  res.json({
+    success: true,
+  });
+});
 // PORT
 const PORT = process.env.PORT || 4000;
 
