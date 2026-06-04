@@ -2,18 +2,14 @@ import userModel from "../models/userModel.js";
 import { Webhook } from "svix";
 
 const clerkWebhooks = async (req, res) => {
-  console.log("Webhook hit");
+  console.log("WEBHOOK HIT");
 
   try {
-    console.log("HEADERS");
-    console.log(req.headers);
-
-    console.log("BODY");
-    console.log(req.body);
+    console.log("SECRET:", !!process.env.CLERK_WEBHOOK_SECRET);
 
     const whook = new Webhook(process.env.CLERK_WEBHOOK_SECRET);
 
-    console.log("Before verify");
+    console.log("VERIFYING");
 
     await whook.verify(JSON.stringify(req.body), {
       "svix-id": req.headers["svix-id"],
@@ -21,7 +17,7 @@ const clerkWebhooks = async (req, res) => {
       "svix-signature": req.headers["svix-signature"],
     });
 
-    console.log("Webhook verified");
+    console.log("VERIFIED");
 
     const { data, type } = req.body;
 
