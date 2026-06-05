@@ -1,10 +1,12 @@
 import userModel from "../models/userModel.js";
 import { Webhook } from "svix";
+import connectDB from "../configs/mongodb.js";
 
 const clerkWebhooks = async (req, res) => {
   console.log("WEBHOOK HIT");
 
   try {
+    await connectDB();
     console.log("SECRET EXISTS:", !!process.env.CLERK_WEBHOOK_SECRET);
     console.log("HEADERS:", req.headers);
     console.log("BODY:", req.body);
