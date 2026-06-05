@@ -39,6 +39,20 @@ const clerkWebhooks = async (req, res) => {
       const newUser = await userModel.create(userData);
 
       console.log("USER SAVED:", newUser);
+
+      if (type === "user.updated") {
+        await userModel.findOneAndUpdate(
+          { clerkId: data.id },
+          {
+            email: data.email_addresses[0].email_address,
+            firstName: data.first_name,
+            lastName: data.last_name,
+            photo: data.image_url,
+          },
+        );
+
+        console.log("USER UPDATED");
+      }
     }
 
     return res.status(200).json({});
