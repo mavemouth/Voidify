@@ -23,36 +23,32 @@ const clerkWebhooks = async (req, res) => {
 
     const { data, type } = req.body;
 
-    console.log("TYPE:", type);
-
     if (type === "user.created") {
       const userData = {
         clerkId: data.id,
         email: data.email_addresses[0].email_address,
         firstName: data.first_name,
         lastName: data.last_name,
-        photo: data.image_url,
+        photo: data.profile_image_url,
       };
 
-      console.log("SAVING USER");
+      await userModel.create(userData);
 
-      const newUser = await userModel.create(userData);
+      console.log("USER SAVED");
+    }
 
-      console.log("USER SAVED:", newUser);
+    if (type === "user.updated") {
+      await userModel.findOneAndUpdate(
+        { clerkId: data.id },
+        {
+          email: data.email_addresses[0].email_address,
+          firstName: data.first_name,
+          lastName: data.last_name,
+          photo: data.profile_image_url,
+        },
+      );
 
-      if (type === "user.updated") {
-        await userModel.findOneAndUpdate(
-          { clerkId: data.id },
-          {
-            email: data.email_addresses[0].email_address,
-            firstName: data.first_name,
-            lastName: data.last_name,
-            photo: data.image_url,
-          },
-        );
-
-        console.log("USER UPDATED");
-      }
+      console.log("USER UPDATED");
     }
 
     return res.status(200).json({});
