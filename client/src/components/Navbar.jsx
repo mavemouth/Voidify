@@ -16,6 +16,11 @@ const Navbar = () => {
     if (isSignedIn) {
       loadCreditsData();
       setShowSignIn(false);
+    } else {
+      const hasClerkParam = window.location.search.includes("__clerk") || window.location.hash.includes("__clerk");
+      if (hasClerkParam) {
+        setShowSignIn(true);
+      }
     }
   }, [isSignedIn]);
 

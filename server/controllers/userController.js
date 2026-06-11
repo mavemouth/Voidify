@@ -74,6 +74,7 @@ const clerkWebhooks = async (req, res) => {
 // API controller function to get user available credits data
 const userCredits = async (req, res) => {
   try {
+    await connectDB();
     const { clerkId } = req.body;
     console.log("userCredits requested for clerkId:", clerkId);
     const userData = await userModel.findOne({ clerkId });
@@ -102,6 +103,7 @@ const razorpayInstance = new razorpay({
 // API to make payment for credits
 const paymentRazorpay = async (req, res) => {
   try {
+    await connectDB();
     const { clerkId, planId } = req.body;
     const userData = await userModel.findOne({ clerkId });
     if (!userData || !planId) return res.json({ success: false, message: "Invalid Credentials" });
@@ -161,6 +163,7 @@ const paymentRazorpay = async (req, res) => {
 // API Controller function to verify razorpay payment
 const verifyRazorpay = async (req, res) => {
   try {
+    await connectDB();
     const { razorpay_order_id } = req.body;
     const orderinfo = await razorpayInstance.orders.fetch(razorpay_order_id);
     if (orderinfo.status === 'paid') {
