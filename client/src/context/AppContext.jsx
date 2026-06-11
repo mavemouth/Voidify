@@ -44,6 +44,7 @@ const AppContextProvider = (props) => {
   const removeBg = async (image) => {
     try {
       if (!isSignedIn) {
+        localStorage.setItem("clerk_logging_in", "true");
         return openSignIn();
       }
       setImage(image);

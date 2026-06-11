@@ -7,7 +7,9 @@ import { AppContext } from "../context/AppContext";
 
 const Navbar = () => {
   const [showSignIn, setShowSignIn] = useState(() => {
-    return window.location.search.includes("__clerk") || window.location.hash.includes("__clerk");
+    const loggingIn = localStorage.getItem("clerk_logging_in") === "true";
+    const hasClerkParam = window.location.search.includes("__clerk") || window.location.hash.includes("__clerk");
+    return loggingIn || hasClerkParam;
   });
   const { isLoaded, isSignedIn, user } = useUser();
   const { credits, loadCreditsData } = useContext(AppContext);
@@ -18,8 +20,14 @@ const Navbar = () => {
     if (isSignedIn) {
       loadCreditsData();
       setShowSignIn(false);
+      localStorage.removeItem("clerk_logging_in");
     }
   }, [isSignedIn]);
+
+  const handleGetStarted = () => {
+    localStorage.setItem("clerk_logging_in", "true");
+    setShowSignIn(true);
+  };
 
   const isLoading = !isLoaded || (isSignedIn && credits === false);
 
@@ -52,7 +60,7 @@ const Navbar = () => {
           </div>
         ) : (
           <button
-            onClick={() => setShowSignIn(true)}
+            onClick={handleGetStarted}
             className="bg-zinc-800 text-white flex items-center gap-4 px-4 py-2 sm:px-8 sm:py-3 text-sm rounded-full"
           >
             Get Started{" "}
@@ -65,7 +73,10 @@ const Navbar = () => {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="relative">
             <button
-              onClick={() => setShowSignIn(false)}
+              onClick={() => {
+                setShowSignIn(false);
+                localStorage.removeItem("clerk_logging_in");
+              }}
               className="absolute -top-10 right-0 text-white text-xl font-bold"
             >
               ✕
