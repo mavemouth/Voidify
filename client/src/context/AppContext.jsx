@@ -18,7 +18,7 @@ const AppContextProvider = (props) => {
   const { isSignedIn } = useUser();
   const { openSignIn } = useClerk();
 
-  const loadCreditsData = async () => {
+  const loadCreditsData = async (retryCount = 0) => {
     try {
       const token = await getToken();
       console.log("TOKEN:", token);
@@ -32,6 +32,11 @@ const AppContextProvider = (props) => {
       }
     } catch (error) {
       console.log(error);
+      if (error.response && error.response.status === 404 && retryCount < 5) {
+        console.log(`User not found in database. Retrying... (Attempt ${retryCount + 1})`);
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+        return loadCreditsData(retryCount + 1);
+      }
       toast.error(error.message);
     }
   };
