@@ -6,7 +6,9 @@ import { useContext, useEffect } from "react";
 import { AppContext } from "../context/AppContext";
 
 const Navbar = () => {
-  const [showSignIn, setShowSignIn] = useState(false);
+  const [showSignIn, setShowSignIn] = useState(() => {
+    return window.location.search.includes("__clerk") || window.location.hash.includes("__clerk");
+  });
   const { isLoaded, isSignedIn, user } = useUser();
   const { credits, loadCreditsData } = useContext(AppContext);
 
@@ -16,11 +18,6 @@ const Navbar = () => {
     if (isSignedIn) {
       loadCreditsData();
       setShowSignIn(false);
-    } else {
-      const hasClerkParam = window.location.search.includes("__clerk") || window.location.hash.includes("__clerk");
-      if (hasClerkParam) {
-        setShowSignIn(true);
-      }
     }
   }, [isSignedIn]);
 
