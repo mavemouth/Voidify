@@ -7,6 +7,7 @@ import express from "express";
 import cors from "cors";
 import connectDB from "./configs/mongodb.js";
 import userRouter from "./routes/userRoutes.js";
+import imageRouter from "./routes/ImageRoutes.js";
 
 const app = express();
 
@@ -30,6 +31,8 @@ app.post("/test", (req, res) => {
     success: true,
   });
 });
+app.use("/api/image", imageRouter);
+
 // PORT
 const PORT = process.env.PORT || 4000;
 
