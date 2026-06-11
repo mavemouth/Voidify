@@ -81,7 +81,10 @@ const userCredits = async (req, res) => {
     console.log("userData found:", userData);
 
     if (!userData) {
-      return res.status(404).json({ success: false, message: "User not found in database" });
+      return res.status(404).json({ 
+        success: false, 
+        message: `User not found in database. Queried clerkId: '${clerkId}'. req.body: ${JSON.stringify(req.body)}` 
+      });
     }
 
     res.json({ success: true, credits: userData.creditBalance });
